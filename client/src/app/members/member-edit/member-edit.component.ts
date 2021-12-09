@@ -12,6 +12,7 @@ import { MembersService } from 'src/app/_services/members.service';
   templateUrl: './member-edit.component.html',
   styleUrls: ['./member-edit.component.css']
 })
+
 export class MemberEditComponent implements OnInit {
   @ViewChild("editForm") editForm: NgForm;
   member: Member;
@@ -26,7 +27,7 @@ export class MemberEditComponent implements OnInit {
 
   constructor(private accountService: AccountService, private memberService: MembersService, private toastr: ToastrService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
-   }
+  }
 
   ngOnInit(): void {
     this.loadMember();
@@ -42,4 +43,5 @@ export class MemberEditComponent implements OnInit {
       this.editForm.reset(this.member);
     })
   }
+
 }
