@@ -29,6 +29,7 @@ namespace API.Controllers{
             _photoService = photoService;
         }
 
+        // [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery]UserParams userParams){
             //IEnumerable: Es como una lista pero mas simplificada.
@@ -42,6 +43,7 @@ namespace API.Controllers{
             return Ok(users);
         }
 
+        // [Authorize(Roles = "Member")]
         // api/users/3
         [HttpGet("{username}", Name = "GetUser")]
         public async Task<ActionResult<MemberDto>> GetUser(string username) {
