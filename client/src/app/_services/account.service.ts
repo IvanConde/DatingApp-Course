@@ -4,6 +4,7 @@ import { ReplaySubject } from 'rxjs';
 import { map } from "rxjs/operators";
 import { environment } from 'src/environments/environment';
 import { User } from '../_models/user';
+import { PresenceService } from './presence.service';
 
 
 // Los servicios son inyectables, son un singleton, los componentes se rompen en cuando los abandonamos los servicios al ser singleton no.
@@ -13,7 +14,7 @@ import { User } from '../_models/user';
 export class AccountService {
 	baseurl = environment.apiUrl;
 	
-	constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient, private presence: PresenceService) { }
 	private currentUserSource = new ReplaySubject<User>(1);
 	currentUser$ = this.currentUserSource.asObservable();
 
@@ -23,6 +24,7 @@ export class AccountService {
 		const user = response;
 		if (user) {
 			this.setCurrentUser(user);
+			this.presence.createHubConnnection(user);
 		}
 		})
 	)
@@ -33,6 +35,7 @@ export class AccountService {
 			map((user: User) => {
 				if(user) {
 					this.setCurrentUser(user);
+					this.presence.createHubConnnection(user);
 				}
 			})
 		)
@@ -50,6 +53,7 @@ export class AccountService {
 	logout() {
 		localStorage.removeItem("user");
 		this.currentUserSource.next(null);
+		this.presence.stopHubConnection();
 	}
 
 	getDecodedToken(token) {
